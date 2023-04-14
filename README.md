@@ -8,6 +8,10 @@
 
 Read more in the [documetation](https://python-dirmagic.readthedocs.io)
 
+## Build Status
+
+[![Documentation Status](https://readthedocs.org/projects/python-dirmagic/badge/?version=latest)](https://python-dirmagic.readthedocs.io/en/latest/?badge=latest)
+
 ## Can't wait, get started?
 
 ```bash

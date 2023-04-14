@@ -22,14 +22,15 @@ Supports python>=3.7, and then move to :ref:`use-cases`.
 
 *Provides:*
 
-* a powerful pattern matching system to describe directory structures,
+* a flexible system to describe directory structures,
 * a comprehensive collection of patterns idenitfying projects (e.g. git repositories, python packages, GIS data), and
 * an interface & tools to make use of those patterns
 
 *Inspired by:*
 
-* `libmagic <https://www.darwinsys.com/file/>`_ and the ``file`` command
-* `python's binding <https://github.com/ahupp/python-magic>`_
+* `file command <https://en.wikipedia.org/wiki/File_(command)>`_`
+* `libmagic <https://www.darwinsys.com/file/>`_ as library of "magic numbers"
+* `python's binding <https://github.com/ahupp/python-magic>`_ of libmagic
 * `rprojroot <https://rprojroot.r-lib.org/>`_
 * `pyprojroot <https://github.com/chendaniely/pyprojroot>`_
 
