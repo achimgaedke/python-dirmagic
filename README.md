@@ -6,7 +6,7 @@
 
 ... just like `file`/`libmagic` for files.
 
-More in the [documetation](doc/index.rst)
+Read more in the [documetation](https://python-dirmagic.readthedocs.io)
 
 ## Can't wait, get started?
 
@@ -23,7 +23,7 @@ import dirmagic import find_projects, project_types
 
 find_projects(
     "/home/achim/Code",
-     project_types.python_package
+     project_types.is_python_project
 )
 ```
 
@@ -35,7 +35,7 @@ from dirmagic import find_root, project_types
 find_root(".", project_types.dvc_repository)
 ```
 
-Identify project type contained in directory:
+Identify project types contained in directory:
 
 ```python
 from dirmagic import identify_project
@@ -43,4 +43,4 @@ from dirmagic import identify_project
 identify_project("Code/some_repo")
 ```
 
-See [usecases](doc/usecases.rst) for more...
+See [usecases](https://python-dirmagic.readthedocs.io/en/latest/usecases.html) for more...

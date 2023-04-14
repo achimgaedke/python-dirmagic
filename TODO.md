@@ -21,25 +21,14 @@ Explore notation like:
 }
 ```
 
-Combination of properties:
-
-AND/OR, XOR (exactly one of...)
-
-Usecases:
-
-* detect project structure (just basic validation)
-* verify project structure (just basic validation)
-* find projects of a certain kind
-* find project root
-
 Extend:
 
 * work on archives, repository URLs, S3, other FS... (maybe using fsspec?)
 
-Make consumable for others:
+Pipeline and packaging:
 
-* create package
-* create documentation
+* build python packages (whl, ...),
+* upload package to pypi
+* setup a conda project
 
-* publish pip / conda
-* publish documentation
+and all this also with github supported CI pipelines.

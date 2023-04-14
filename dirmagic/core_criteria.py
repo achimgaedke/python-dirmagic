@@ -96,9 +96,11 @@ class CriterionResult(typing.NamedTuple):
 
 class Criterion(abc.ABC):
     """
-    Abstract base class of a root-criterion.
+    Abstract base class of a test criterion for a directory.
 
-    A criterion tests whether it applies to a given path.
+    The ``test`` method returns the result of a test.
+
+    Criteria can be combined wiht the logical operators ``&``, ``|``, ``~``.
     """
 
     def describe(self) -> str:
@@ -118,14 +120,26 @@ class Criterion(abc.ABC):
         ...
 
     def __or__(self, other: "Criterion") -> "AnyCriteria":
+        """
+        Support ``|`` operator for logical or.
+        """
         if isinstance(other, AnyCriteria):
             return AnyCriteria(self, *other.criteria)
         return AnyCriteria(self, other)
 
     def __and__(self, other: "Criterion") -> "AllCriteria":
+        """
+        Support ``&`` operator for logical and.
+        """
         if isinstance(other, AllCriteria):
             return AllCriteria(self, *other.criteria)
         return AllCriteria(self, other)
+
+    def __invert__(self):
+        """
+        Support ``~`` operator for logical not/inversion.
+        """
+        return NotCriterion(self)
 
 
 class AnyCriteria(Criterion):
@@ -205,6 +219,12 @@ class NotCriterion(Criterion):
         result = self.criterion.test(dir)
         return CriterionResult(not result.result, self, dir, (result,))
 
+    def __invert__(self):
+        """
+        Convert double not to original criterion.
+        """
+        return self.criterion
+
 
 class CriterionFromTestFun(Criterion):
     """
@@ -234,7 +254,7 @@ class CriterionFromTestFun(Criterion):
 
 class ProjectType(Criterion):
     """
-    Defines a project type with a name, a category and the test criterion
+    Defines a project type with a name, a category and the test criterion.
     """
 
     name: str

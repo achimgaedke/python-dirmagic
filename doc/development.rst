@@ -1,9 +1,12 @@
 Development
 ===========
 
-At the moment: One-man show using a MacBook with VS Code
+Source code repository and issue tracker at `github <https://github.com/achimgaedke/python-dirmagic/>`_.
 
-Using some auto-formatting, linting, testing (pytest)
+At the moment:
+
+One-man show using a MacBook with VS Code, mainly python 3.11,
+using some auto-formatting(black), linting (mypy), testing (pytest)
 
 Compatibility:
 
@@ -17,7 +20,9 @@ Optional dependencies
 Useful commands
 ---------------
 
-Create a development environment
+For local development
+
+Create a development environment:
 
 .. code-block:: shell
 
@@ -34,26 +39,20 @@ Build documentation:
 
 .. code-block:: shell
 
-    sphinx-build doc build
+    sphinx-build doc build/html
 
-Test project:
+Test and lint project:
 
 .. code-block: shell
 
     python -m pytest --cov-report term-missing --cov=dirmagic  tests
-    python -m mypy dirmagic
+    python -m mypy dirmagic tests
 
-Todo:
+Reformat python files:
 
-* linting,
-* testing,
-* coverage of tests and documentation,
-* build python packages (whl, ...),
-* upload documentation, e.g. to rtd
-* upload package to pypi
-* setup a conda project
+.. code-block:: shell
 
-and all this also with github supported CI pipelines.
+    python -m black dirmagic tests
 
 Contributing
 ------------

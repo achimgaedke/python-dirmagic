@@ -5,29 +5,34 @@
 
 import sys
 import os.path
+
 sys.path.append(os.path.abspath(f"{__file__}/../.."))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'python-dirmagic'
-copyright = '2023, Achim Gädke'
-author = 'Achim Gädke'
-release = '0.0.1'
+project = "python-dirmagic"
+copyright = "2023, Achim Gädke"
+author = "Achim Gädke"
+release = "0.0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.autodoc", "sphinx_autodoc_typehints", 'sphinx_rtd_theme',]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx_autodoc_typehints",
+    "sphinx_rtd_theme",
+]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+html_theme = "sphinx_rtd_theme"
+html_static_path = ["_static"]
 
 # -- Options for autodoc ------------------------------------------------------
 

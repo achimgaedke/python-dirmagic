@@ -116,9 +116,7 @@ def identify_project(
     types_to_test: typing.Optional[typing.Sequence[ProjectType]] = None,
 ) -> typing.List[typing.Tuple[str, str]]:
     """
-    Determines which criterion matches on path.
-
-    The ProjectType criteria are tested in order, the first matched is returned.
+    Determines which criteria matche on path.
 
     Returns list of (project category, project name).
     """
