@@ -1,0 +1,17 @@
+name: dirmagic-dev-env
+dependencies:
+- black
+- build
+- flake8
+- ipykernel
+- mypy
+- pytest
+- pytest-cov
+- python
+- rich
+- python-magic
+- tree
+- wheel
+- sphinx
+- sphinx_rtd_theme
+- sphinx-autodoc-typehints
