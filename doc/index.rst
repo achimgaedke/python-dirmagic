@@ -3,21 +3,22 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to dirmagic's documentation!
-====================================
+Welcome to python-dirmagic's documentation!
+===========================================
 
 *Can't wait, get started?*
 
 .. code-block:: shell
 
-   pip install git+https://github.com/achimgaedke/dirmagic.git
+   pip install git+https://github.com/achimgaedke/python-dirmagic.git
 
 Supports python>=3.7, and then move to :ref:`use-cases`.
 
 *Mission:*
 
-Just like filemagic but for directories, it tells you what type of
-project/directory structure you're dealing with.
+``dirmagic`` tells you what type of project/directory structure you're dealing with.
+
+... just like ``file``/``libmagic`` for files.
 
 *Provides:*
 

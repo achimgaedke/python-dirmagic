@@ -1,15 +1,17 @@
-# dirmagic
+# python-dirmagic
 
-Mission:
+*Mission:*
 
-Just like filemagic, tells you what type of project/directory structure you're dealing with.
+`dirmagic` tells you what type of project/directory structure you're dealing with.
+
+... just like `file`/`libmagic` for files.
 
 More in the [documetation](doc/index.rst)
 
 ## Can't wait, get started?
 
 ```bash
-pip install git+https://github.com/achimgaedke/dirmagic.git
+pip install git+https://github.com/achimgaedke/python-dirmagic.git
 ```
 
 Simple examples:

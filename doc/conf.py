@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(f"{__file__}/../.."))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'dirmagic'
+project = 'python-dirmagic'
 copyright = '2023, Achim Gädke'
 author = 'Achim Gädke'
 release = '0.0.1'
