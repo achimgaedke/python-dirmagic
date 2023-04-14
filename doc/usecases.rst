@@ -1,3 +1,5 @@
+.. _use-cases:
+
 Use Cases
 =========
 
@@ -7,7 +9,9 @@ Find all directories containing a python package
 
     from dirmagic import find_projects, project_types
 
-    find_projects("~/Code", project_types.python_package)
+    find_projects("/home/me/Code", project_types.python_package)
+
+Returns ``[pathlib.Path("/home/me/Code/py-Project1"), pathlib.Path("/home/me/Code/py-Project2"), ...]``.
 
 Find the DVC root in your parent directories
 
@@ -16,11 +20,11 @@ Find the DVC root in your parent directories
     from dirmagic import find_root, project_types
 
     find_root(
-        "~/Code/DS-Project/somewhere/in/it",
+        "/home/me/Code/DS-Project/somewhere/in/it",
         project_types.dvc_repository
         )
 
-Returns ````
+Returns ``pathlib.Path("/home/me/Code/DS-Project")``.
 
 Identify project type contained in directory:
 
@@ -33,6 +37,7 @@ Identify project type contained in directory:
 Returns: 
 
 .. code-block:: python
+
     [
         ('IDE', 'Visual Studio Code project'),
         ('packaging', 'python package'),

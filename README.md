@@ -9,7 +9,7 @@ More in the [documetation](doc/index.rst)
 ## Can't wait, get started?
 
 ```bash
-pip3 install git+https://github.com/achimgaedke/dirmagic.git
+pip install git+https://github.com/achimgaedke/dirmagic.git
 ```
 
 Simple examples:

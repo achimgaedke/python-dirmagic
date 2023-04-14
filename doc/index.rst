@@ -8,18 +8,11 @@ Welcome to dirmagic's documentation!
 
 *Can't wait, get started?*
 
-
 .. code-block:: shell
 
    pip install git+https://github.com/achimgaedke/dirmagic.git
 
-Supports python>=3.7
-
-.. code-block:: python
-
-   import dirmagic
-
-   data_directories = dirmagic.find_projects("~/data-mirror/",  XXX_pattern)
+Supports python>=3.7, and then move to :ref:`use-cases`.
 
 *Mission:*
 
