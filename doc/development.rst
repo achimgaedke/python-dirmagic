@@ -41,6 +41,12 @@ Build documentation:
 
     sphinx-build doc build/html
 
+Build distribution:
+
+.. code-block:: shell
+
+    python -m build
+
 Test and lint project:
 
 .. code-block: shell

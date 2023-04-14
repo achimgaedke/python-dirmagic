@@ -1,9 +1,8 @@
 __pycache__/
-
-# sphynx, wheel
 /build/
-
 /.coverage
 /.mypy_cache/
 /.pytest_cache/
 /.vscode/
+/dist/
+/*.egg-info/
