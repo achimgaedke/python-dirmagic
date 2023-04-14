@@ -106,11 +106,10 @@ def test_all_criteria(tmp_path: pathlib.Path) -> None:
         combined_criteria.describe()
         == "contains the entry `a` and contains the entry `my_file`"
     )
-    combined_root, combined_reason = find_root(
-        test_dir / "a/b", combined_criteria, return_reason=True
+    assert find_root(test_dir / "a/b", combined_criteria, return_reason=True) == (
+        test_dir,
+        "contains the entry `a` and contains the entry `my_file`",
     )
-    assert combined_root == test_dir
-    assert combined_reason == "contains the entry `a` and contains the entry `my_file`"
 
     combined_all_any = combined_criteria & HasEntry("b") | HasEntry("a")
     assert isinstance(combined_all_any, AnyCriteria)  # due to operator precedence
@@ -122,11 +121,10 @@ def test_all_criteria(tmp_path: pathlib.Path) -> None:
     assert combined_all_any.test(test_dir)
 
     assert find_root(test_dir / "a", combined_all_any)
-    combined_root, reason = find_root(
-        test_dir / "a", combined_all_any, return_reason=True
+    assert find_root(test_dir / "a", combined_all_any, return_reason=True) == (
+        test_dir,
+        "contains the entry `a`",
     )
-    assert combined_root == test_dir
-    assert reason == "contains the entry `a`"
 
 
 def test_testfun_criterion(tmp_path: pathlib.Path) -> None:

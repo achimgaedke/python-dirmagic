@@ -80,19 +80,19 @@ def find_root(
 
     if criterion is None:
         the_criteria = [
-                # use a reasonable default
-                # from https://github.com/chendaniely/pyprojroot/blob/main/src/pyprojroot/here.py#L17
-                HasFile(".here"),
-                HasDir(".git"),
-                HasEntryGlob("*.Rproj"),
-                HasFile("requirements.txt"),
-                HasFile("setup.py"),
-                HasDir(".dvc"),
-                HasDir(".spyproject"),
-                HasFile("pyproject.toml"),
-                HasDir(".idea"),
-                HasDir(".vscode"),
-            ]
+            # use a reasonable default
+            # from https://github.com/chendaniely/pyprojroot/blob/main/src/pyprojroot/here.py#L17
+            HasFile(".here"),
+            HasDir(".git"),
+            HasEntryGlob("*.Rproj"),
+            HasFile("requirements.txt"),
+            HasFile("setup.py"),
+            HasDir(".dvc"),
+            HasDir(".spyproject"),
+            HasFile("pyproject.toml"),
+            HasDir(".idea"),
+            HasDir(".vscode"),
+        ]
     elif isinstance(criterion, (list, tuple)):
         the_criteria = [as_root_criterion(c) for c in criterion]
     else:

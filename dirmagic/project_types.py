@@ -1,4 +1,4 @@
-from .core_criteria import Criterion, PathSpec, CriterionResult, ProjectType
+from .core_criteria import ProjectType
 from .generic_criteria import (
     HasBasename,
     HasDir,
@@ -141,10 +141,7 @@ Any repository (git, svn, ...) directory
 
 
 __all__ = [
-    "ProjectType",
-    *(
-        criterion_name
-        for criterion_name, project_type in globals().items()
-        if isinstance(project_type, ProjectType)
-    ),
+    criterion_name
+    for criterion_name, project_type in globals().items()
+    if isinstance(project_type, ProjectType)
 ]
