@@ -8,7 +8,7 @@ dependencies:
 - pytest
 - pytest-cov
 - python
-- rich
+- rich-with-jupyter
 - python-magic
 - tree
 - wheel

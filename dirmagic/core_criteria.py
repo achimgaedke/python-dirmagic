@@ -2,6 +2,13 @@ import abc
 import pathlib
 import typing
 
+# todo: revisit need for trying to import this
+# helps with mypy and sphinx typehints
+try:
+    import rich
+except ImportError:
+    pass
+
 PathSpec = typing.Union[str, pathlib.Path]
 """
 Path types expected by the functions in this package.
@@ -12,13 +19,33 @@ class CriterionResult(typing.NamedTuple):
     """
     Returns the result of the check and the tests the result is based on.
 
-    This allows understanding the result.
+    The truthiness of the object reflects the test result, so it can be
+    used in conditions straight away:
+
+    .. code-block::
+
+        if is_dvc_root.test(data_repo):
+            with dvc.api.open(
+                'data/my_data.csv',
+                repo=data_repo
+            ) as f:
+                # ... f is a file-like object that can be processed normally.
+
+    The methods :py:meth:`simple_tree`, :py:meth:`rich_tree` and :py:meth:`reason`
+    help to inspect the result.
     """
 
     result: bool
+    "test result"
+
     criterion: "Criterion"
+    "test criterion"
+
     path: PathSpec
+    "path tested"
+
     sub_results: typing.Tuple["CriterionResult", ...] = ()
+    "results of sub-tests to evaluate this criterion"
 
     def __bool__(self) -> bool:
         return self.result
@@ -61,7 +88,7 @@ class CriterionResult(typing.NamedTuple):
     def indent_text(text: str, indent: str) -> str:
         return "".join(f"{indent}{line}" for line in text.splitlines(keepends=True))
 
-    def result_tree(self) -> str:
+    def simple_tree(self) -> str:
         """
         Simple result tree with (nested) indented lines
         """
@@ -70,7 +97,7 @@ class CriterionResult(typing.NamedTuple):
         result_string = f"{str(self.result).upper()}: "
         if self.sub_results:
             sub_result_string = "\n".join(
-                self.indent_text(r.result_tree(), indent) for r in self.sub_results
+                self.indent_text(r.simple_tree(), indent) for r in self.sub_results
             )
 
             if isinstance(self.criterion, AnyCriteria):
@@ -92,6 +119,46 @@ class CriterionResult(typing.NamedTuple):
             return f"{result_string}\n{sub_result_string}"
 
         return f"{result_string}{self.criterion.describe()}"
+
+    def rich_tree(self) -> "rich.tree.Tree":
+        """
+        Result tree rendered with rich text layout.
+
+        Please install the ``rich`` package (see optional dependencies).
+        """
+        from rich.tree import Tree
+
+        result_tree = Tree("")
+        if self.result:
+            result_string = f":heavy_check_mark: "
+        else:
+            result_string = f":cross_mark: "
+        if self.sub_results:
+            for r in self.sub_results:
+                result_tree.add(r.rich_tree())
+
+            if isinstance(self.criterion, AnyCriteria):
+                result_string += "OR"
+                if len(self.sub_results) != len(self.criterion.criteria):
+                    result_string += f" ({len(self.criterion.criteria) - len(self.sub_results)} untested criteria not listed)"
+            elif isinstance(self.criterion, AllCriteria):
+                result_string += "AND"
+                if len(self.sub_results) != len(self.criterion.criteria):
+                    result_string += f" ({len(self.criterion.criteria) - len(self.sub_results)} untested criteria not listed)"
+            elif isinstance(self.criterion, NotCriterion):
+                result_string += "NOT"
+            elif isinstance(self.criterion, ProjectType):
+                result_string += f"`{self.criterion.name}` project type"
+            else:
+                # add warning for unknown?
+                result_string += f"`{type(self.criterion)}` criterion"
+
+            result_tree.label = result_string
+
+            return result_tree
+
+        result_tree.label = f"{result_string}{self.criterion.describe()}"
+        return result_tree
 
 
 class Criterion(abc.ABC):
@@ -141,6 +208,15 @@ class Criterion(abc.ABC):
         """
         return NotCriterion(self)
 
+    def rich_tree(self) -> "rich.tree.Tree":
+        """
+        Display the criterion as a ``rich`` tree.
+        """
+        from rich.tree import Tree
+
+        # simple tree leaf
+        return Tree(self.describe())
+
 
 class AnyCriteria(Criterion):
     """
@@ -169,6 +245,15 @@ class AnyCriteria(Criterion):
         if isinstance(other, AnyCriteria):
             return AnyCriteria(*self.criteria, *other.criteria)
         return AnyCriteria(*self.criteria, other)
+
+    def rich_tree(self) -> "rich.tree.Tree":
+        from rich.tree import Tree
+
+        t = Tree("OR")
+        for c in self.criteria:
+            t.add(c.rich_tree())
+
+        return t
 
 
 class AllCriteria(Criterion):
@@ -206,6 +291,15 @@ class AllCriteria(Criterion):
             return AllCriteria(*self.criteria, *other.criteria)
         return AllCriteria(*self.criteria, other)
 
+    def rich_tree(self) -> "rich.tree.Tree":
+        from rich.tree import Tree
+
+        t = Tree("AND")
+        for c in self.criteria:
+            t.add(c.rich_tree())
+
+        return t
+
 
 class NotCriterion(Criterion):
     def __init__(self, criterion: Criterion):
@@ -224,6 +318,14 @@ class NotCriterion(Criterion):
         Convert double not to original criterion.
         """
         return self.criterion
+
+    def rich_tree(self) -> "rich.tree.Tree":
+        from rich.tree import Tree
+
+        t = Tree("NOT")
+        t.add(self.criterion.rich_tree())
+
+        return t
 
 
 class CriterionFromTestFun(Criterion):
@@ -282,3 +384,11 @@ class ProjectType(Criterion):
     def test(self, dir: PathSpec) -> CriterionResult:
         result = self.criterion.test(dir)
         return CriterionResult(result.result, self, dir, (result,))
+
+    def rich_tree(self) -> "rich.tree.Tree":
+        from rich.tree import Tree
+
+        t = Tree(f"`{self.name}` project type")
+        t.add(self.criterion.rich_tree())
+
+        return t
