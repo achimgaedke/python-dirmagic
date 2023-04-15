@@ -70,12 +70,12 @@ is_r_package = ProjectType(
     "R package", "packaging", HasFile("DESCRIPTION", contents="^Package: ")
 )
 """
-R package directory
+`R source package <https://r-pkgs.org/structure.html#sec-source-package>`_ directory
 """
 
 is_remake_project = ProjectType("remake", "data pipelines", HasFile("remake.yml"))
 """
-`remake <https://github.com/richfitz/remake>` project directory
+`remake <https://github.com/richfitz/remake>`_ project directory
 """
 
 is_drake_project = ProjectType("drake", "data pipelines", HasDir(".drake"))
