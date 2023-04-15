@@ -6,13 +6,7 @@
 Welcome to python-dirmagic's documentation!
 ===========================================
 
-*Can't wait, get started?*
-
-.. code-block:: shell
-
-   pip install git+https://github.com/achimgaedke/python-dirmagic.git
-
-Supports python>=3.7, and then move to :ref:`use-cases`.
+Quick intro: :ref:`use-cases`
 
 *Mission:*
 
@@ -28,13 +22,31 @@ Supports python>=3.7, and then move to :ref:`use-cases`.
 
 *Inspired by:*
 
-* `file command <https://en.wikipedia.org/wiki/File_(command)>`_`
-* `libmagic <https://www.darwinsys.com/file/>`_ as library of "magic numbers"
+* `file command <https://en.wikipedia.org/wiki/File_(command)>`_
+* `libmagic <https://www.darwinsys.com/file/>`_ as library of file signatures (aka magic numbers)
 * `python's binding <https://github.com/ahupp/python-magic>`_ of libmagic
 * `rprojroot <https://rprojroot.r-lib.org/>`_
 * `pyprojroot <https://github.com/chendaniely/pyprojroot>`_
 
-... repeatedly trying to find data, projects, subprojects programatically
+... myself, repeatedly trying to find data, projects, subprojects programatically
+
+Installation
+------------
+
+.. code-block:: shell
+
+   pip install git+https://github.com/achimgaedke/python-dirmagic.git
+
+Supports python>=3.7.
+
+Optional dependencies:
+
+* ```rich`` for better tree layout
+
+If you plan to use ``rich`` with jupyter, install:
+
+* the pip package ``rich[jupyter]``
+* the conda package ``rich-with-jupyter``
 
 .. toctree::
    :maxdepth: 1

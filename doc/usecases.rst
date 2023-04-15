@@ -9,56 +9,72 @@ Find Projects
 Find all directories containing a python package with :py:func:`dirmagic.find_root`
 and the python package criterion :py:data:`dirmagic.project_types.is_python_project`:
 
-.. code-block:: python
+.. ipython::
 
-    from dirmagic import find_projects, project_types
+    In [1]: from dirmagic import find_projects, project_types
 
-    find_projects("/home/me/Code", project_types.is_python_project)
+    In [2]: find_projects("/Users/achim/Code", project_types.is_python_project)
+    Out[2]: 
+    [PosixPath('/Users/achim/Code/python-dirmagic'),
+     PosixPath('/Users/achim/Code/nbconvert'),
+     PosixPath('/Users/achim/Code/py-aws-vault')]
 
-Returns ``[pathlib.Path("/home/me/Code/py-Project1"), pathlib.Path("/home/me/Code/py-Project2"), ...]``.
+Find the Project Root
+---------------------
 
-Find Project Root
------------------
-
-Find the DVC root in your parent directories with :py:func:`dirmagic.find_root`
+Find the project root in the parent directories with :py:func:`dirmagic.find_root`
 and a criterion from :py:mod:`dirmagic.project_types`:
 
-.. code-block:: python
+.. ipython::
 
-    from dirmagic import find_root, project_types
+    In [1]: from dirmagic import find_root, project_types
 
-    find_root(
-        "/home/me/Code/DS-Project/somewhere/in/it",
-        project_types.dvc_repository
-        )
+    In [2]: find_root("build/html", project_types.is_python_project)
+    Out[2]: PosixPath('/Users/achim/Code/python-dirmagic')
 
-Returns ``pathlib.Path("/home/me/Code/DS-Project")``.
+    In [3]: find_root("build/html")
+    Out[3]: PosixPath('/Users/achim/Code/python-dirmagic')
 
-Identify Project Type
----------------------
+    In [4]: find_root("build/html", return_reason=True)
+    Out[4]: 
+    (PosixPath('/Users/achim/Code/python-dirmagic'),
+     'contains the directory `.git`')
+
+Commands 3 and 4 are using a default list of criteria as defined in ``pyprojroot``.
+
+Identify Project Types
+----------------------
 
 Identify the project types contained in a directory with :py:func:`dirmagic.identify_project`:
 
-.. code-block:: python
+.. ipython::
 
-    from dirmagic import identify_project
+    In [1]: from dirmagic import identify_project
 
-    identify_project(".")
+    In [2]: identify_project(".")
+    Out[2]: 
+    [('packaging', 'python package'),
+     ('version control', 'git'),
+     ('version control', 'repository')]
 
-Returns: 
-
-.. code-block:: python
-
-    [
-        ('IDE', 'Visual Studio Code project'),
-        ('packaging', 'python package'),
-        ('version control', 'git'),
-        ('version control', 'repository')
-    ]
-
-
-Use A Custom Criterion
+Check Criterion Result
 ----------------------
+
+Display a result with ``rich``:
+
+.. ipython::
+
+    In [1]: import dirmagic
+
+    In [2]: dirmagic.project_types.is_git_root.test(".").rich_tree()
+    Out[2]: 
+    ✔ `git` project type
+    └── ✔ OR (1 untested criteria not listed)
+        └── ✔ contains the directory `.git`
+
+
+Custom Criteria
+---------------
 
 Build up a custom criterion using the generic criteria classes in
 :py:mod:`dirmagic.generic_criteria` and the logical operators
@@ -76,3 +92,23 @@ Build up a custom criterion using the generic criteria classes in
         ~ HasFile(".ignore")
     )
     find_projects("/data/", is_my_data_tree, max_depth=10)
+
+Check Criterion
+---------------
+
+Display a criterion with ``rich``:
+
+.. ipython::
+
+    In [1]: import dirmagic
+
+    In [2]: dirmagic.project_types.is_vcs_root.rich_tree()
+    Out[2]: 
+    `repository` project type
+    └── OR
+        ├── `git` project type
+        │   └── OR
+        │       ├── contains the directory `.git`
+        │       └── has a file `.git` and file contains a line matching the regular expression `^gitdir: `
+        └── `subversion` project type
+            └── contains the directory `.svn`

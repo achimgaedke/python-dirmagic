@@ -14,6 +14,8 @@ Read more in the [documetation](https://python-dirmagic.readthedocs.io)
 
 ## Can't wait, get started?
 
+Install:
+
 ```bash
 pip install git+https://github.com/achimgaedke/python-dirmagic.git
 ```
@@ -47,4 +49,4 @@ from dirmagic import identify_project
 identify_project("Code/some_repo")
 ```
 
-See [usecases](https://python-dirmagic.readthedocs.io/en/latest/usecases.html) for more...
+See [Use Cases](https://python-dirmagic.readthedocs.io/en/latest/usecases.html) for more...

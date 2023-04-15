@@ -1,4 +1,5 @@
 __pycache__/
+.ipynb_checkpoints/
 /build/
 /.coverage
 /.mypy_cache/
