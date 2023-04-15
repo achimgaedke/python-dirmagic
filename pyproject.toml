@@ -5,6 +5,10 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.mypy]
+# necessary for python-3.7, mypy-0.982
+enable_recursive_aliases = true
+
 [project]
 name = "python-dirmagic"
 version = "0.0.1"

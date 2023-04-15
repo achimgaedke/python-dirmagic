@@ -37,11 +37,11 @@ Installation
 
    pip install git+https://github.com/achimgaedke/python-dirmagic.git
 
-Supports python>=3.7.
+Supports ``python>=3.7``.
 
 Optional dependencies:
 
-* ```rich`` for better tree layout
+* `rich <https://rich.readthedocs.io/en/latest/>`_ for a better tree structure display
 
 If you plan to use ``rich`` with jupyter, install:
 

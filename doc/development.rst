@@ -14,7 +14,6 @@ Python 3.7 ... 3.11 on all CPython platforms
 
 Optional dependencies
 
-* `python-magic <https://github.com/ahupp/python-magic>`_ for a file type criterion
 * `rich <https://rich.readthedocs.io/en/latest/>`_ for fancy terminal output (display reason for matching)
 
 Useful commands
