@@ -9,7 +9,7 @@ Find Projects
 Find all directories containing a python package with :py:func:`dirmagic.find_root`
 and the python package criterion :py:data:`dirmagic.project_types.is_python_project`:
 
-.. ipython::
+.. code-block:: ipython
 
     In [1]: from dirmagic import find_projects, project_types
 
@@ -25,7 +25,7 @@ Find the Project Root
 Find the project root in the parent directories with :py:func:`dirmagic.find_root`
 and a criterion from :py:mod:`dirmagic.project_types`:
 
-.. ipython::
+.. code-block:: ipython
 
     In [1]: from dirmagic import find_root, project_types
 
@@ -47,7 +47,7 @@ Identify Project Types
 
 Identify the project types contained in a directory with :py:func:`dirmagic.identify_project`:
 
-.. ipython::
+.. code-block:: ipython
 
     In [1]: from dirmagic import identify_project
 
@@ -62,7 +62,7 @@ Check Criterion Result
 
 Display a result with ``rich``:
 
-.. ipython::
+.. code-block:: ipython
 
     In [1]: import dirmagic
 
@@ -80,25 +80,35 @@ Build up a custom criterion using the generic criteria classes in
 :py:mod:`dirmagic.generic_criteria` and the logical operators
 ``|`` (or), ``&`` (and) and ``~`` (not).
 
-.. code-block:: python
+.. code-block:: ipython
 
-    from dirmagic import find_projects
-    from dirmagic.generic_criteria import HasDir, HasFile, HasFileGlob
+    In [1]: from dirmagic.generic_criteria import HasDir, HasFile, HasFileGlob
 
-    is_my_data_tree =  (
-        HasDir("data") &
-        HasFileGolb("data/*.hdf") &
-        HasFile("metadata.json") &
-        ~ HasFile(".ignore")
-    )
-    find_projects("/data/", is_my_data_tree, max_depth=10)
+    In [2]: is_my_data_tree =  (
+        ...:         HasDir("data") &
+        ...:         HasFileGlob("data/*.hdf") &
+        ...:         HasFile("metadata.json") &
+        ...:         ~ HasFile(".ignore")
+        ...:     )
+
+    In [3]: is_my_data_tree.rich_tree()
+    Out[3]: 
+    AND
+    ├── contains the directory `data`
+    ├── has a file matching `data/*.hdf`
+    ├── has a file `metadata.json`
+    └── NOT
+        └── has a file `.ignore`
+
+The criterion can be used with :py:func:`dirmagic.find_projects` or
+:py:func:`dirmagic.find_root` - just as above.
 
 Check Criterion
 ---------------
 
 Display a criterion with ``rich``:
 
-.. ipython::
+.. code-block:: ipython
 
     In [1]: import dirmagic
 
