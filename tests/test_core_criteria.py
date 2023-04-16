@@ -29,7 +29,9 @@ def test_get_start_path(tmp_path: pathlib.Path) -> None:
 
     # at least on my mac resolve returns a different result
     # todo: build up a proper fixutre with a sym link
-    assert tmp_path.resolve() == get_start_path(path=tmp_path, resolve_path=True)
+    assert tmp_path.resolve() == get_start_path(
+        path=tmp_path, resolve_path=True
+    )
 
 
 def test_list_search_dirs(tmp_path: pathlib.Path) -> None:
@@ -38,13 +40,22 @@ def test_list_search_dirs(tmp_path: pathlib.Path) -> None:
 
     all_search_dirs = list_search_dirs(path=nested_dirs)
     assert all_search_dirs[0] == nested_dirs
-    assert [d.name for d in all_search_dirs[:6]] == ["a", "b", "c", "d", "e", "f"][::-1]
+    assert [d.name for d in all_search_dirs[:6]] == [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+    ][::-1]
 
     search_dirs = list_search_dirs(path=nested_dirs, limit_parents=2)
     assert search_dirs == all_search_dirs[:3]  # one current dir, 2 parents
 
     search_dirs = list_search_dirs(path=nested_dirs, limit_parents=-2)
-    assert search_dirs == all_search_dirs[:-2]  # leave out the last two entries
+    assert (
+        search_dirs == all_search_dirs[:-2]
+    )  # leave out the last two entries
 
     search_dirs = list_search_dirs(
         path=nested_dirs, limit_parents=-len(all_search_dirs) - 2
@@ -106,18 +117,24 @@ def test_all_criteria(tmp_path: pathlib.Path) -> None:
         combined_criteria.describe()
         == "contains the entry `a` and contains the entry `my_file`"
     )
-    assert find_root(test_dir / "a/b", combined_criteria, return_reason=True) == (
+    assert find_root(
+        test_dir / "a/b", combined_criteria, return_reason=True
+    ) == (
         test_dir,
         "contains the entry `a` and contains the entry `my_file`",
     )
 
     combined_all_any = combined_criteria & HasEntry("b") | HasEntry("a")
-    assert isinstance(combined_all_any, AnyCriteria)  # due to operator precedence
+    assert isinstance(
+        combined_all_any, AnyCriteria
+    )  # due to operator precedence
     assert combined_all_any.test(test_dir)
 
     # this time the other way round
     combined_all_any = HasEntry("a") | HasEntry("b") & combined_criteria
-    assert isinstance(combined_all_any, AnyCriteria)  # due to operator precedence
+    assert isinstance(
+        combined_all_any, AnyCriteria
+    )  # due to operator precedence
     assert combined_all_any.test(test_dir)
 
     assert find_root(test_dir / "a", combined_all_any)

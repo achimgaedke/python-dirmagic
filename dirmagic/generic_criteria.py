@@ -27,6 +27,8 @@ class HasFile(Criterion):
     * is True if a fixed string should match an entire line.
     * is False if the contents is a regular expression matching a part
       of the line (i.e. use the anchors ``^``, ``$`` for start and end).
+
+    This is the reimplementation of ``has_file`` from ``rprojroot``.
     """
 
     def __init__(
@@ -94,7 +96,9 @@ class HasFile(Criterion):
         if self.fixed:
             description += f"a line with the contents `{self.contents}`"
         else:
-            description += f"a line matching the regular expression `{self.contents}`"
+            description += (
+                f"a line matching the regular expression `{self.contents}`"
+            )
 
         if self.max_lines_to_search >= 0:
             description += f" in the first {self.max_lines_to_search} line/s"
@@ -104,7 +108,8 @@ class HasFile(Criterion):
     def test(self, dir: PathSpec) -> CriterionResult:
         full_filename = pathlib.Path(dir) / self.filename
         return CriterionResult(
-            full_filename.is_file() and self.check_file_contents(full_filename),
+            full_filename.is_file()
+            and self.check_file_contents(full_filename),
             self,
             dir,
         )
@@ -120,7 +125,14 @@ class HasFilePattern(HasFile):
     """
     Search for file matching regular expression pattern.
 
-    Limitation: Searches only for entries at the same directory level
+    ``pattern`` is the regular expression pattern any filename will be
+    matched against.
+
+    See :py:class:`HasFile` for the other parameters.
+
+    This is the reimplementation of ``has_file_pattern`` from ``rprojroot``.
+
+    Limitation: Searches only for entries at the same directory level.
     """
 
     def __init__(
@@ -160,6 +172,10 @@ class HasFileGlob(HasFile):
     """
     Search for filename matching the glob pattern.
 
+    ``pattern`` is the pattern any filename will be matched against.
+
+    See :py:class:`HasFile` for the other parameters.
+
     The glob pattern allows searching in subdirectories.
     """
 
@@ -177,7 +193,9 @@ class HasFileGlob(HasFile):
 
     def test(self, dir: PathSpec) -> CriterionResult:
         for full_filename in pathlib.Path(dir).glob(str(self.filename)):
-            if full_filename.is_file() and self.check_file_contents(full_filename):
+            if full_filename.is_file() and self.check_file_contents(
+                full_filename
+            ):
                 # todo: how to communicate the matching filename?
                 return CriterionResult(True, self, dir)
         return CriterionResult(False, self, dir)
@@ -199,7 +217,9 @@ class HasDir(Criterion):
         super().__init__()
 
     def test(self, dir: PathSpec) -> CriterionResult:
-        return CriterionResult((pathlib.Path(dir) / self.dirname).is_dir(), self, dir)
+        return CriterionResult(
+            (pathlib.Path(dir) / self.dirname).is_dir(), self, dir
+        )
 
     def describe(self) -> str:
         return f"contains the directory `{self.dirname}`"
@@ -221,7 +241,9 @@ class HasEntry(Criterion):
         super().__init__()
 
     def test(self, dir: PathSpec) -> CriterionResult:
-        return CriterionResult((pathlib.Path(dir) / self.entryname).exists(), self, dir)
+        return CriterionResult(
+            (pathlib.Path(dir) / self.entryname).exists(), self, dir
+        )
 
     def describe(self) -> str:
         return f"contains the entry `{self.entryname}`"
@@ -264,7 +286,9 @@ class HasBasename(Criterion):
         super().__init__()
 
     def test(self, dir: PathSpec) -> CriterionResult:
-        return CriterionResult(self.basename == pathlib.Path(dir).name, self, dir)
+        return CriterionResult(
+            self.basename == pathlib.Path(dir).name, self, dir
+        )
 
     def describe(self) -> str:
         return f"has the basename `{self.basename}`"

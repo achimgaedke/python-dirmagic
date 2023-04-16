@@ -31,8 +31,8 @@ class CriterionResult(typing.NamedTuple):
             ) as f:
                 # ... f is a file-like object that can be processed normally.
 
-    The methods :py:meth:`simple_tree`, :py:meth:`rich_tree` and :py:meth:`reason`
-    help to inspect the result.
+    The methods :py:meth:`simple_tree`, :py:meth:`rich_tree` and
+    :py:meth:`reason` help to inspect the result.
     """
 
     result: bool
@@ -63,14 +63,18 @@ class CriterionResult(typing.NamedTuple):
                 return " or ".join(r.reason() for r in self.sub_results)
             else:
                 # todo: avoid the not (not (...))
-                return " and ".join(f"not ({r.reason()})" for r in self.sub_results)
+                return " and ".join(
+                    f"not ({r.reason()})" for r in self.sub_results
+                )
 
         if isinstance(self.criterion, AllCriteria):
             if self.result:
                 return " and ".join(r.reason() for r in self.sub_results)
             else:
                 # todo: avoid the not (not (...))
-                return " or ".join(f"not ({r.reason()})" for r in self.sub_results)
+                return " or ".join(
+                    f"not ({r.reason()})" for r in self.sub_results
+                )
 
         if isinstance(self.criterion, NotCriterion):
             if self.result:
@@ -86,7 +90,9 @@ class CriterionResult(typing.NamedTuple):
 
     @staticmethod
     def indent_text(text: str, indent: str) -> str:
-        return "".join(f"{indent}{line}" for line in text.splitlines(keepends=True))
+        return "".join(
+            f"{indent}{line}" for line in text.splitlines(keepends=True)
+        )
 
     def simple_tree(self) -> str:
         """
@@ -97,17 +103,20 @@ class CriterionResult(typing.NamedTuple):
         result_string = f"{str(self.result).upper()}: "
         if self.sub_results:
             sub_result_string = "\n".join(
-                self.indent_text(r.simple_tree(), indent) for r in self.sub_results
+                self.indent_text(r.simple_tree(), indent)
+                for r in self.sub_results
             )
 
             if isinstance(self.criterion, AnyCriteria):
                 result_string += "OR"
                 if len(self.sub_results) != len(self.criterion.criteria):
-                    result_string += f" ({len(self.criterion.criteria) - len(self.sub_results)} untested criteria not listed)"
+                    result_string += f""" ({len(self.criterion.criteria) -
+                        len(self.sub_results)} untested criteria not listed)"""
             elif isinstance(self.criterion, AllCriteria):
                 result_string += "AND"
                 if len(self.sub_results) != len(self.criterion.criteria):
-                    result_string += f" ({len(self.criterion.criteria) - len(self.sub_results)} untested criteria not listed)"
+                    result_string += f""" ({len(self.criterion.criteria) -
+                        len(self.sub_results)} untested criteria not listed)"""
             elif isinstance(self.criterion, NotCriterion):
                 result_string += "NOT"
             elif isinstance(self.criterion, ProjectType):
@@ -130,9 +139,9 @@ class CriterionResult(typing.NamedTuple):
 
         result_tree = Tree("")
         if self.result:
-            result_string = f":heavy_check_mark: "
+            result_string = ":heavy_check_mark: "
         else:
-            result_string = f":cross_mark: "
+            result_string = ":cross_mark: "
         if self.sub_results:
             for r in self.sub_results:
                 result_tree.add(r.rich_tree())
@@ -140,11 +149,13 @@ class CriterionResult(typing.NamedTuple):
             if isinstance(self.criterion, AnyCriteria):
                 result_string += "OR"
                 if len(self.sub_results) != len(self.criterion.criteria):
-                    result_string += f" ({len(self.criterion.criteria) - len(self.sub_results)} untested criteria not listed)"
+                    result_string += f""" ({len(self.criterion.criteria) -
+                      len(self.sub_results)} untested criteria not listed)"""
             elif isinstance(self.criterion, AllCriteria):
                 result_string += "AND"
                 if len(self.sub_results) != len(self.criterion.criteria):
-                    result_string += f" ({len(self.criterion.criteria) - len(self.sub_results)} untested criteria not listed)"
+                    result_string += f""" ({len(self.criterion.criteria) -
+                      len(self.sub_results)} untested criteria not listed)"""
             elif isinstance(self.criterion, NotCriterion):
                 result_string += "NOT"
             elif isinstance(self.criterion, ProjectType):

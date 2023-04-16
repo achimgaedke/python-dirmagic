@@ -9,6 +9,12 @@ build-backend = "setuptools.build_meta"
 # necessary for python-3.7, mypy-0.982
 enable_recursive_aliases = true
 
+[tool.black]
+line-length = 79
+
+[tool.pytest]
+testpaths = ["tests"]
+
 [project]
 name = "python-dirmagic"
 version = "0.0.1"
@@ -24,6 +30,11 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+rich = ["rich"]
+
 [project.urls]
-"Homepage" = "https://github.com/achimgaedke/python-dirmagic"
-"Bug Tracker" = "https://github.com/achimgaedke/python-dimragic/issues"
+"Homepage" = "https://python-dirmagic.readthedocs.io/"
+"Documentation" = "https://python-dirmagic.readthedocs.io/"
+"Source" = "https://github.com/achimgaedke/python-dirmagic"
+"Bug Reports" = "https://github.com/achimgaedke/python-dimragic/issues"

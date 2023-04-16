@@ -1,7 +1,7 @@
 import pathlib
 import typing
 
-from .core_criteria import CriterionResult, PathSpec, Criterion, ProjectType
+from .core_criteria import PathSpec, ProjectType
 from . import project_types
 from .generic_criteria import as_root_criterion, HasDir, HasEntryGlob, HasFile
 from .utilities import list_search_dirs, get_start_path
@@ -55,15 +55,14 @@ def find_root(
 
     ``path`` - the start path - will be converted into an asbolute path
 
-    ``criterion``: can be a specific criterion, one of the project types or
+    ``criterion`` - can be a specific criterion, one of the project types or
     None (default) for a collection of criteria as used in pyprojroot.
 
-    ``return_reason`` - if True: returns (root, result), otherwise returns root.
-    In order to investigate the reason, use the ``reason()`` or the ``result_tree``
-    function on the CriterionResult object.
+    ``return_reason`` - if True: returns (root, result), otherwise returns
+    the root only.
 
-    ``resolve_path`` will use ``pathlib.resolve_path`` to get an absolute start
-    path. Otherwise ``os.path.abspath`` is used (default).
+    ``resolve_path``-  will use ``pathlib.resolve_path`` to get an absolute
+    start path. Otherwise ``os.path.abspath`` is used (default).
 
     ``limit_parents`` if None (default) all parents are considered, a
     positive number will consider the next n parents. A negative number
@@ -80,8 +79,7 @@ def find_root(
 
     if criterion is None:
         the_criteria = [
-            # use a reasonable default
-            # from https://github.com/chendaniely/pyprojroot/blob/main/src/pyprojroot/here.py#L17
+            # use a reasonable default from pyprojroot.here
             HasFile(".here"),
             HasDir(".git"),
             HasEntryGlob("*.Rproj"),

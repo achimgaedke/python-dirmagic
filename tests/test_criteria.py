@@ -21,7 +21,9 @@ def example_fs_structure(tmp_path: pathlib.Path) -> pathlib.Path:
 
 
 def test_has_file_criterion(example_fs_structure: pathlib.Path) -> None:
-    assert list(HasFile.read_lines_from_file(example_fs_structure / "my_file")) == [
+    assert list(
+        HasFile.read_lines_from_file(example_fs_structure / "my_file")
+    ) == [
         "a",
         "b",
         "c",
@@ -32,7 +34,9 @@ def test_has_file_criterion(example_fs_structure: pathlib.Path) -> None:
     assert HasFile("my_file", "c", fixed=True).test(example_fs_structure)
     assert HasFile("my_file", "c", n=-3, fixed=True).test(example_fs_structure)
     assert HasFile("my_file", "c", n=3, fixed=True).test(example_fs_structure)
-    assert not HasFile("my_file", "a", fixed=True, n=0).test(example_fs_structure)
+    assert not HasFile("my_file", "a", fixed=True, n=0).test(
+        example_fs_structure
+    )
     assert not HasFile("my_file", "", fixed=True).test(example_fs_structure)
 
     # test regexp matching
@@ -49,18 +53,25 @@ def test_has_file_criterion(example_fs_structure: pathlib.Path) -> None:
     # look at the reason
     with pytest.raises(FileNotFoundError):
         find_root(
-            example_fs_structure, HasFile("my_file_not there"), return_reason=True
+            example_fs_structure,
+            HasFile("my_file_not there"),
+            return_reason=True,
         )
 
-    assert find_root(example_fs_structure, HasFile("my_file"), return_reason=True) == (
+    assert find_root(
+        example_fs_structure, HasFile("my_file"), return_reason=True
+    ) == (
         pathlib.Path(example_fs_structure),
         "has a file `my_file`",
     )
     assert find_root(
-        example_fs_structure, HasFile("my_file", "a", 1, fixed=True), return_reason=True
+        example_fs_structure,
+        HasFile("my_file", "a", 1, fixed=True),
+        return_reason=True,
     ) == (
         pathlib.Path(example_fs_structure),
-        "has a file `my_file` and file contains a line with the contents `a` in the first 1 line/s",
+        "has a file `my_file` and "
+        "file contains a line with the contents `a` in the first 1 line/s",
     )
 
     assert find_root(
@@ -69,17 +80,20 @@ def test_has_file_criterion(example_fs_structure: pathlib.Path) -> None:
         return_reason=True,
     ) == (
         pathlib.Path(example_fs_structure),
-        "has a file `my_file` and file contains a line matching the regular expression `[ac]` in the first 1 line/s",
+        "has a file `my_file` and file contains a line matching "
+        "the regular expression `[ac]` in the first 1 line/s",
     )
 
     # test the describe method
     assert (
         HasFile("my_file", "a", 1, fixed=True).describe()
-        == "has a file `my_file` and file contains a line with the contents `a` in the first 1 line/s"
+        == "has a file `my_file` and file contains a line "
+        "with the contents `a` in the first 1 line/s"
     )
     assert (
         HasFile("my_file", "[ab]", 3).describe()
-        == "has a file `my_file` and file contains a line matching the regular expression `[ab]` in the first 3 line/s"
+        == "has a file `my_file` and file contains a line "
+        "matching the regular expression `[ab]` in the first 3 line/s"
     )
 
 
@@ -88,7 +102,8 @@ def test_has_dir(example_fs_structure: pathlib.Path) -> None:
     assert not HasDir("a").test(example_fs_structure / "b")
 
     assert (
-        HasDir("a").test(example_fs_structure).reason() == "contains the directory `a`"
+        HasDir("a").test(example_fs_structure).reason()
+        == "contains the directory `a`"
     )
     assert (
         HasDir("b").test(example_fs_structure).reason()
@@ -108,7 +123,10 @@ def test_has_entry(example_fs_structure: pathlib.Path) -> None:
         example_fs_structure
     )  # oddly this succeeds, though it is a file
     assert not HasEntry("b").test(example_fs_structure)
-    assert HasEntry("a").test(example_fs_structure).reason() == "contains the entry `a`"
+    assert (
+        HasEntry("a").test(example_fs_structure).reason()
+        == "contains the entry `a`"
+    )
 
 
 def test_has_basename(example_fs_structure: pathlib.Path) -> None:

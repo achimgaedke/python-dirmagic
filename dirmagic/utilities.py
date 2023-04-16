@@ -5,7 +5,9 @@ import typing
 from .core_criteria import PathSpec
 
 
-def get_start_path(path: PathSpec = ".", resolve_path: bool = False) -> pathlib.Path:
+def get_start_path(
+    path: PathSpec = ".", resolve_path: bool = False
+) -> pathlib.Path:
     """
     Determines the start path for the root directory search.
 
