@@ -46,16 +46,15 @@ Build distribution:
 
     python -m build
 
-Reformat python files:
+Reformat python files in-place:
 
 .. code-block:: shell
 
     python -m black dirmagic tests
 
-
 Test and lint project:
 
-.. code-block: shell
+.. code-block:: shell
 
     python -m pytest --cov-report term-missing --cov=dirmagic  tests
     python -m mypy dirmagic tests
