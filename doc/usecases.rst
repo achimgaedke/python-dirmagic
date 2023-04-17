@@ -15,7 +15,8 @@ Identify the project types contained in a directory with
 
     In [2]: identify_project(".")
     Out[2]: 
-    [('packaging', 'python package'),
+    [('IDE', 'Visual Studio Code project'),
+     ('packaging', 'python package'),
      ('version control', 'git'),
      ('version control', 'repository')]
 

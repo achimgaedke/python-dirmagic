@@ -6,6 +6,17 @@
 Welcome to python-dirmagic's documentation!
 ===========================================
 
+.. code-block:: ipython
+
+    In [1]: from dirmagic import identify_project
+
+    In [2]: identify_project(".")
+    Out[2]: 
+    [('IDE', 'Visual Studio Code project'),
+     ('packaging', 'python package'),
+     ('version control', 'git'),
+     ('version control', 'repository')]
+
 Quick intro: :ref:`use-cases`
 
 *Mission:*
@@ -37,7 +48,7 @@ Installation
 
    pip install git+https://github.com/achimgaedke/python-dirmagic.git
 
-Supports ``python>=3.7``.
+Supports ``python=3.7``... ``python3.12``.
 
 Optional dependencies:
 
