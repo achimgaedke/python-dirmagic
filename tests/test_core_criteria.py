@@ -4,6 +4,8 @@ import pathlib
 
 import pytest
 
+import dirmagic.project_types
+from dirmagic import find_root
 from dirmagic.core_criteria import (
     AllCriteria,
     AnyCriteria,
@@ -11,11 +13,7 @@ from dirmagic.core_criteria import (
     PathSpec,
 )
 from dirmagic.generic_criteria import HasEntry
-from dirmagic.utilities import (
-    get_start_path,
-    list_search_dirs,
-)
-from dirmagic import find_root
+from dirmagic.utilities import get_start_path, list_search_dirs
 
 
 def test_get_start_path(tmp_path: pathlib.Path) -> None:
@@ -63,21 +61,24 @@ def test_list_search_dirs(tmp_path: pathlib.Path) -> None:
     assert search_dirs == [nested_dirs]  # only current dir
 
 
-def test_find_functions(
-    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    (tmp_path / "my_file").touch()
-    (tmp_path / "a").mkdir()
+def test_not_criteria(tmp_path: pathlib.Path) -> None:
+    test_dir = tmp_path
+    (test_dir / "my_file").touch()
+    (test_dir / "a").mkdir(parents=True)
 
-    assert HasEntry("my_file").test(tmp_path)
-    assert not HasEntry("my_file.txt").test(tmp_path)
+    assert (~HasEntry("c")).test(test_dir)
+    assert not (~HasEntry("my_file")).test(test_dir)
+    assert (~~HasEntry("my_file")).test(test_dir)
+    assert (~HasEntry("c")).describe() == "not (contains the entry `c`)"
 
-    # test that non-existing root is returned as None
-    with pytest.raises(FileNotFoundError):
-        find_root(tmp_path, HasEntry("my_file_not there"))
 
-    with pytest.raises(FileNotFoundError):
-        find_root(tmp_path / "b", HasEntry("my_file.txt"))
+def test_criteria_rich_tree() -> None:
+    richt_tree = pytest.importorskip("rich.tree").Tree
+    t = dirmagic.project_types.is_git_root.rich_tree()
+    assert isinstance(t, richt_tree)
+    assert t.label == "`git` project type"
+    assert len(t.children) == 1
+    assert isinstance(t.children[0], richt_tree)
 
 
 def test_any_criteria(tmp_path: pathlib.Path) -> None:
