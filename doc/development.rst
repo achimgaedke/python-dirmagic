@@ -1,20 +1,22 @@
 Development
 ===========
 
-Source code repository and issue tracker at `github <https://github.com/achimgaedke/python-dirmagic/>`_.
+Source code repository and issue tracker at `github
+<https://github.com/achimgaedke/python-dirmagic/>`_.
 
 At the moment:
 
 One-man show using a MacBook with VS Code, mainly python 3.11,
-using some auto-formatting(black), linting (mypy), testing (pytest)
+using some auto-formatting(black), linting (mypy,flake), testing (pytest)
 
 Compatibility:
 
-Python 3.7 ... 3.11 on all CPython platforms
+Python 3.7 ... 3.12 on all CPython platforms.
 
-Optional dependencies
+Optional dependencies:
 
-* `rich <https://rich.readthedocs.io/en/latest/>`_ for fancy terminal output (display reason for matching)
+* `rich <https://rich.readthedocs.io/en/latest/>`_ for fancy terminal output
+  (display reason for matching)
 
 Useful commands
 ---------------
@@ -72,9 +74,10 @@ with ``<what>`` as one of ``test,lint,type,coverage,format``.
 Contributing
 ------------
 
-* Add a pattern defining project directory
+* Add a criterion defining a project type
 * Advocate for a use case
 * Improve documentation
+* Extend the set of criteria to define project types
 * Improve the code (correctness, performance or capability)
 
 What the project is not
@@ -82,7 +85,7 @@ What the project is not
 
 * An alternative to package data/resource locators for installed packages like
   ``pkgutil.get_data``.
-* A full validation of the project's data.
+* An in-depth validation of a project's data.
 
 Project Maturity
 ----------------
@@ -90,4 +93,5 @@ Project Maturity
 Inception state, answering the question: *Will this resonate with a reasonably
 broad community?*
 
-Aim for a 0.1 release with a preliminary interface, continue towards 1.0 using semantic versioning.
+Aim for a 0.1 release with a preliminary interface, continue towards 1.0 using
+semantic versioning.
