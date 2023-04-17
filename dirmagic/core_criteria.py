@@ -213,7 +213,7 @@ class Criterion(abc.ABC):
             return AllCriteria(self, *other.criteria)
         return AllCriteria(self, other)
 
-    def __invert__(self):
+    def __invert__(self) -> "Criterion":
         """
         Support ``~`` operator for logical not/inversion.
         """
@@ -324,7 +324,7 @@ class NotCriterion(Criterion):
         result = self.criterion.test(dir)
         return CriterionResult(not result.result, self, dir, (result,))
 
-    def __invert__(self):
+    def __invert__(self) -> "Criterion":
         """
         Convert double not to original criterion.
         """

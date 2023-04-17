@@ -6,8 +6,9 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.mypy]
+strict = true
 # necessary for python-3.7, mypy-0.982
-enable_recursive_aliases = true
+# enable_recursive_aliases = true
 
 [tool.black]
 line-length = 79

@@ -10,6 +10,8 @@ dependencies:
 - python
 - rich-with-jupyter
 - python-magic
+- tox>=4
+# tox-conda not available for tox>=4
 - tree
 - wheel
 - sphinx
