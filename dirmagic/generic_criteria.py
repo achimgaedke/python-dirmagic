@@ -105,13 +105,34 @@ class HasFile(Criterion):
 
         return description
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        if args or kwargs:
+            return self.expand_pattern(*args, **kwargs).test(dir)
+
         full_filename = pathlib.Path(dir) / self.filename
         return CriterionResult(
             full_filename.is_file()
             and self.check_file_contents(full_filename),
             self,
             dir,
+        )
+
+    def expand_pattern(
+        self,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> "HasFile":
+        # spike solution
+        return HasFile(
+            str(self.filename).format(*args, **kwargs),
+            self.contents,
+            self.max_lines_to_search,
+            self.fixed,
         )
 
     def describe(self) -> str:
@@ -149,7 +170,13 @@ class HasFilePattern(HasFile):
         self.max_lines_to_search = int(n)
         super().__init__(pattern)
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        assert not (args or kwargs)
         pattern = re.compile(str(self.filename))
         for full_filename in pathlib.Path(dir).iterdir():
             if (
@@ -198,7 +225,13 @@ class HasFileGlob(HasFile):
         self.max_lines_to_search = int(n)
         super().__init__(pattern)
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        assert not (args or kwargs)
         for full_filename in pathlib.Path(dir).glob(str(self.filename)):
             if full_filename.is_file() and self.check_file_contents(
                 full_filename
@@ -223,10 +256,24 @@ class HasDir(Criterion):
         self.dirname = dirname
         super().__init__()
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        if args or kwargs:
+            return self.expand_pattern(*args, **kwargs).test(dir)
         return CriterionResult(
             (pathlib.Path(dir) / self.dirname).is_dir(), self, dir
         )
+
+    def expand_pattern(
+        self,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> "HasDir":
+        return HasDir(str(self.dirname).format(*args, **kwargs))
 
     def describe(self) -> str:
         return f"contains the directory `{self.dirname}`"
@@ -247,10 +294,24 @@ class HasEntry(Criterion):
         self.entryname = entryname
         super().__init__()
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        if args or kwargs:
+            return self.expand_pattern(*args, **kwargs).test(dir)
         return CriterionResult(
             (pathlib.Path(dir) / self.entryname).exists(), self, dir
         )
+
+    def expand_pattern(
+        self,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> "HasEntry":
+        return HasEntry(str(self.entryname).format(*args, **kwargs))
 
     def describe(self) -> str:
         return f"contains the entry `{self.entryname}`"
@@ -270,7 +331,13 @@ class HasEntryGlob(Criterion):
         self.pattern = pattern
         super().__init__()
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        assert not (args or kwargs)
         for _ in pathlib.Path(dir).glob(self.pattern):
             # TODO return the entry found
             return CriterionResult(True, self, dir)
@@ -294,11 +361,24 @@ class HasBasename(Criterion):
         self.basename = basename
         super().__init__()
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
+        if args or kwargs:
+            return self.expand_pattern(*args, **kwargs).test(dir)
         return CriterionResult(
             self.basename == pathlib.Path(dir).name, self, dir
         )
 
+    def expand_pattern(
+        self,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> "HasBasename":
+        return HasBasename(self.basename.format(*args, **kwargs))
 
     def describe(self) -> str:
         return f"has the basename `{self.basename}`"

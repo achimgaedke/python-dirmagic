@@ -1,16 +1,30 @@
 # TODOs
 
-first brain dump before using an issue tracker
+* Increase test coverage (again)
+* Reduce code duplication in tree views (criterion and result)
 
-Describe/Incept:
+## Pattern Match Criteria
 
-* Pattern matching DSL
+AnyMatchCriterion / AllMatchCriterion:
 
-Subdirectory properties
+* add parameters like maxdepth and subdir to *MatchCriterion
+* limit search results to files or dirs only in a subdir...
+* explain search depth/order
+* no nested *MatchCriteria at this stage, but later
+* make more obvious which criteria are useful with the match criteria.
 
-* locating / matching entries
-* testing properties of entries
-* if there are multiple entries, define whether any or all tests must succeed
+Regular expressions and path names:
+
+* search vs match
+* explain how to limit file or dir names with regular expressions
+* mention the translate function & examples
+
+## Add criteria
+
+* file size based, e.g. empty, min size...
+* an optional libmagic criterion `magic.from_file(filename, mime=True)`
+
+## Criterion Definitons
 
 Explore notation like:
 
@@ -21,11 +35,11 @@ Explore notation like:
 }
 ```
 
-Extend:
+## Extend file interface
 
 * work on archives, repository URLs, S3, other FS... (maybe using fsspec?)
 
-Pipeline and packaging:
+## Pipeline and packaging
 
 * build python packages (whl, ...),
 * upload package to pypi

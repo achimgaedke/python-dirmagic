@@ -98,6 +98,8 @@ class CriterionResult(typing.NamedTuple):
         """
         Simple result tree with (nested) indented lines
         """
+        from .pattern_criteria import AnyMatchCriterion, AllMatchCriterion
+
         # todo: same with rich module
         indent = " " * 4
         result_string = f"{str(self.result).upper()}: "
@@ -117,6 +119,16 @@ class CriterionResult(typing.NamedTuple):
                 if len(self.sub_results) != len(self.criterion.criteria):
                     result_string += f""" ({len(self.criterion.criteria) -
                         len(self.sub_results)} untested criteria not listed)"""
+            elif isinstance(self.criterion, AnyMatchCriterion):
+                result_string += (
+                    "true for at least one entry matching"
+                    f" {self.criterion.pattern.pattern}"
+                )
+            elif isinstance(self.criterion, AllMatchCriterion):
+                result_string += (
+                    "true for all entries matching"
+                    f" {self.criterion.pattern.pattern}"
+                )
             elif isinstance(self.criterion, NotCriterion):
                 result_string += "NOT"
             elif isinstance(self.criterion, ProjectType):
@@ -138,6 +150,7 @@ class CriterionResult(typing.NamedTuple):
         (see :ref:`optional-dependencies`).
         """
         from rich.tree import Tree
+        from .pattern_criteria import AnyMatchCriterion, AllMatchCriterion
 
         result_tree = Tree("")
         if self.result:
@@ -160,6 +173,16 @@ class CriterionResult(typing.NamedTuple):
                       len(self.sub_results)} untested criteria not listed)"""
             elif isinstance(self.criterion, NotCriterion):
                 result_string += "NOT"
+            elif isinstance(self.criterion, AnyMatchCriterion):
+                result_string += (
+                    "true for at least one entry matching"
+                    f" {self.criterion.pattern.pattern}"
+                )
+            elif isinstance(self.criterion, AllMatchCriterion):
+                result_string += (
+                    "true for all entries matching"
+                    f" {self.criterion.pattern.pattern}"
+                )
             elif isinstance(self.criterion, ProjectType):
                 result_string += f"`{self.criterion.name}` project type"
             else:
@@ -192,11 +215,26 @@ class Criterion(abc.ABC):
         return f"<{type(self).__name__}: {self.describe().capitalize()}>"
 
     @abc.abstractmethod
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> CriterionResult:
         """
         Tests whether the criterion is met for ``path``.
         """
         ...
+
+    def expand_pattern(
+        self,
+        *args: typing.Any,
+        **kwargs: typing.Any,
+    ) -> "Criterion":
+        """
+        finalizes the criterion using the match and test for the criterion
+        """
+        raise NotImplementedError()
 
     def __or__(self, other: "Criterion") -> "AnyCriteria":
         """
@@ -246,14 +284,32 @@ class AnyCriteria(Criterion):
     def describe(self) -> str:
         return " or ".join(c.describe() for c in self.criteria)
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> CriterionResult:
         results = []
         for c in self.criteria:
-            r = c.test(dir)
+            r = c.test(dir, *args, **kwargs)
             results.append(r)
             if r:
                 return CriterionResult(True, self, dir, tuple(results))
         return CriterionResult(False, self, dir, tuple(results))
+
+    def expand_pattern(
+        self,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> "AnyCriteria":
+        """
+        finalizes the criterion using the match and test for the criterion
+        """
+        # can I do that lazily?
+        return AnyCriteria(
+            *(c.expand_pattern(*args, **kwargs) for c in self.criteria)
+        )
 
     def __or__(self, other: Criterion) -> "AnyCriteria":
         if isinstance(other, AnyCriteria):
@@ -291,14 +347,32 @@ class AllCriteria(Criterion):
             descriptions.append(c_description)
         return " and ".join(descriptions)
 
-    def test(self, dir: PathSpec) -> CriterionResult:
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> CriterionResult:
         results = []
         for c in self.criteria:
-            r = c.test(dir)
+            r = c.test(dir, *args, **kwargs)
             results.append(r)
             if not r:
                 return CriterionResult(False, self, dir, tuple(results))
         return CriterionResult(True, self, dir, tuple(results))
+
+    def expand_pattern(
+        self,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> "AllCriteria":
+        """
+        finalizes the criterion using the match and test for the criterion
+        """
+        # can I do that lazily?
+        return AllCriteria(
+            *(c.expand_pattern(*args, **kwargs) for c in self.criteria)
+        )
 
     def __and__(self, other: Criterion) -> "AllCriteria":
         if isinstance(other, AllCriteria):
@@ -323,9 +397,24 @@ class NotCriterion(Criterion):
     def describe(self) -> str:
         return f"not ({self.criterion.describe()})"
 
-    def test(self, dir: PathSpec) -> CriterionResult:
-        result = self.criterion.test(dir)
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> CriterionResult:
+        result = self.criterion.test(dir, *args, **kwargs)
         return CriterionResult(not result.result, self, dir, (result,))
+
+    def expand_pattern(
+        self,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> "NotCriterion":
+        """
+        finalizes the criterion using the match and test for the criterion
+        """
+        return NotCriterion(self.criterion.expand_pattern(*args, **kwargs))
 
     def __invert__(self) -> "Criterion":
         """
@@ -364,8 +453,13 @@ class CriterionFromTestFun(Criterion):
     def describe(self) -> str:
         return self.description
 
-    def test(self, dir: PathSpec) -> CriterionResult:
-        return CriterionResult(self.testfun(dir), self, dir)
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> CriterionResult:
+        return CriterionResult(self.testfun(dir, *args, **kwargs), self, dir)
 
 
 class ProjectType(Criterion):
@@ -395,8 +489,13 @@ class ProjectType(Criterion):
     def describe(self) -> str:
         return f"{self.category}, {self.name}"
 
-    def test(self, dir: PathSpec) -> CriterionResult:
-        result = self.criterion.test(dir)
+    def test(
+        self,
+        dir: PathSpec,
+        *args: typing.Tuple[typing.Any, ...],
+        **kwargs: typing.Dict[str, typing.Any],
+    ) -> CriterionResult:
+        result = self.criterion.test(dir, *args, **kwargs)
         return CriterionResult(result.result, self, dir, (result,))
 
     def rich_tree(self) -> "rich.tree.Tree":

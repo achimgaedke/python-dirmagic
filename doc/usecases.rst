@@ -153,3 +153,88 @@ Display a criterion rendered with ``rich``:
         │       └── has a file `.git` and file contains a line matching the regular expression `^gitdir: `
         └── `subversion` project type
             └── contains the directory `.svn`
+
+Pattern Criteria
+----------------
+
+This is an example of a criterion checking the contents of two directories
+using :py:func:`AllMatchCriterion` based on their filenames.
+
+It asserts that:
+
+* ``classes.txt`` exists,
+* ``images/`` contains only ``png`` and ``jpg`` files,
+* ``labels/`` contains only ``txt`` files, and
+* each ``txt`` file has a corresponding file in ``images/``
+
+The pattern based criteria are documented at :ref:`pattern-criteria`.
+
+(NB: this is not an official YOLO v? definition, but rather what I ended up
+using. The confusion about image dataset directory structures is highlighting
+the need for coded criteria.)
+
+.. code-block:: ipython
+
+    In [1]: import dirmagic
+
+    In [2]: yolo_data = (
+        ...:     dirmagic.generic_criteria.HasFile("classes.txt")
+        ...:     & dirmagic.pattern_criteria.AllMatchCriterion(
+        ...:         r"^images/.*$",
+        ...:         dirmagic.pattern_criteria.SuffixIsIn("{0}", [".png", ".jpg"]),
+        ...:     )
+        ...:     & dirmagic.pattern_criteria.AllMatchCriterion(
+        ...:         r"^labels/(.*)\.[^\.]*$",
+        ...:         dirmagic.pattern_criteria.MatchesPattern("{0}", r".*\.txt$")
+        ...:         & (
+        ...:             dirmagic.generic_criteria.HasFile("images/{1}.png")
+        ...:             | dirmagic.generic_criteria.HasFile("images/{1}.jpg")
+        ...:         ),
+        ...:     )
+        ...: )
+
+    In [3]]: yolo_data.rich_tree()
+    Out[3]: 
+    AND
+    ├── has a file `classes.txt`
+    ├── for all files matching `^images/.*$`
+    │   └── the suffix of `{0}` is in ['.png', '.jpg']
+    └── for all files matching `^labels/(.*)\.[^\.]*$`
+        └── AND
+            ├── `{0}` matches `.*\.txt$`
+            └── OR
+                ├── has a file `images/{1}.png`
+                └── has a file `images/{1}.jpg`
+
+    In [4]: yolo_data.test("augmented_yolo_data/").rich_tree()
+    Out[4]:
+    ✔ AND
+    ├── ✔ has a file `classes.txt`
+    ├── ✔ true for all entries matching ^images/.*$
+    │   ├── ✔ the suffix of `images/ee24d90d-Neill_Forks_Hut_augmented_3.jpg` is in ['.png', '.jpg']
+    │   ├── ✔ the suffix of `images/9d2727d1-Tutuwai_Hut_augmented_3.jpg` is in ['.png', '.jpg']
+    │   ├── ✔ the suffix of `images/6045c6fd-Mcgregor_Bivvy_augmented_3.jpg` is in ['.png', '.jpg']
+    ...
+    │   └── ✔ the suffix of `images/3d20cb82-Waiorongomai_Hut_augmented_5.jpg` is in ['.png', '.jpg']
+    └── ✔ true for all entries matching ^labels/(.*)\.[^\.]*$
+        ├── ✔ AND
+        │   ├── ✔ `labels/b55b7e80-Waitewaewae_Hut_augmented_5.txt` matches `.*\.txt$`
+        │   └── ✔ OR
+        │       ├── ❌ has a file `images/b55b7e80-Waitewaewae_Hut_augmented_5.png`
+        │       └── ✔ has a file `images/b55b7e80-Waitewaewae_Hut_augmented_5.jpg`
+        ├── ✔ AND
+        │   ├── ✔ `labels/5032deda-Dorset_Ridge_Hut_augmented_5.txt` matches `.*\.txt$`
+        │   └── ✔ OR
+        │       ├── ❌ has a file `images/5032deda-Dorset_Ridge_Hut_augmented_5.png`
+        │       └── ✔ has a file `images/5032deda-Dorset_Ridge_Hut_augmented_5.jpg`
+        ├── ✔ AND
+        │   ├── ✔ `labels/62a5984d-Kime_Hut_augmented_3.txt` matches `.*\.txt$`
+        │   └── ✔ OR
+        │       ├── ❌ has a file `images/62a5984d-Kime_Hut_augmented_3.png`
+        │       └── ✔ has a file `images/62a5984d-Kime_Hut_augmented_3.jpg`
+        ...
+        └── ✔ AND
+            ├── ✔ `labels/fbacad57-Carkeek_Hut_augmented_6.txt` matches `.*\.txt$`
+            └── ✔ OR
+                ├── ❌ has a file `images/fbacad57-Carkeek_Hut_augmented_6.png`
+                └── ✔ has a file `images/fbacad57-Carkeek_Hut_augmented_6.jpg`
