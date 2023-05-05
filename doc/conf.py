@@ -20,6 +20,7 @@ release = "0.0.1"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
     "sphinx_autodoc_typehints",
     "sphinx_rtd_theme",
@@ -40,3 +41,14 @@ html_static_path = ["_static"]
 
 autodoc_typehints = "both"
 autodoc_mock_imports = ["rich"]
+
+# -- Options for intersphinx --------------------------------------------------
+
+
+intersphinx_mapping = {
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "rich": ("https://rich.readthedocs.io/en/stable/", None),
+}
+
+intersphinx_disabled_reftypes = ["*"]

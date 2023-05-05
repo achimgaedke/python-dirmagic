@@ -48,9 +48,12 @@ Installation
 
    pip install git+https://github.com/achimgaedke/python-dirmagic.git
 
-Supports ``python=3.7``... ``python3.12``.
+Supports ``python3.7``... ``python3.12``.
 
-Optional dependencies:
+.. _optional-dependencies:
+
+Optional Dependencies
+^^^^^^^^^^^^^^^^^^^^^
 
 * `rich <https://rich.readthedocs.io/en/latest/>`_ for a better tree structure display
 
