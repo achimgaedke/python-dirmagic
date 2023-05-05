@@ -26,8 +26,8 @@ These classes are used to define project types and directory patterns.
 Core Criteria
 -------------
 
-This module provides the abstract criteria and operations on those,
-like ``&``, ``|`` and ``~``.
+The module :py:mod:`core_criteria` provides the abstract criteria and
+operations on those, like ``&``, ``|`` and ``~``.
 The test result object is defined here as well.
 
 .. automodule:: dirmagic.core_criteria

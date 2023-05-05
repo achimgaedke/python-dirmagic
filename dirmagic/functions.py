@@ -61,8 +61,9 @@ def find_root(
     ``return_reason`` - if True: returns (root, result), otherwise returns
     the root only.
 
-    ``resolve_path``-  will use ``pathlib.resolve_path`` to get an absolute
-    start path. Otherwise ``os.path.abspath`` is used (default).
+    ``resolve_path``-  will use :external:py:meth:`pathlib.Path.resolve` to
+    get an absolute start path. Otherwise :external:py:func:`os.path.abspath`
+    is used (default).
 
     ``limit_parents`` if None (default) all parents are considered, a
     positive number will consider the next n parents. A negative number

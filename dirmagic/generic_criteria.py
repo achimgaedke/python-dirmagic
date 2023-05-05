@@ -11,22 +11,22 @@ from .core_criteria import (
     CriterionResult,
 )
 
-# todo: for this and below: check for relative paths in criterion args
-
 
 class HasFile(Criterion):
     """
     Matches if the named file is present, optionally the file's contents
     can be matched.
 
-    ``filename`` name of the file (can be in a subdirectory, ``a/b.txt``)
-    ``contents`` is the matching string or regular expression
-    ``n`` limits the number of lines searched, -1 is unlimited.
-    ``fixed``:
+    :param filename: name of the file (can be in a subdirectory, ``a/b.txt``)
+    :param contents: is the matching string or regular expression
+    :param n: limits the number of lines searched, -1 is unlimited.
+    :param fixed: if set to true, the ``contents`` is matched as string
 
-    * is True if a fixed string should match an entire line.
-    * is False if the contents is a regular expression matching a part
-      of the line (i.e. use the anchors ``^``, ``$`` for start and end).
+    * if ``fixed`` is True, contents must match an entire line (wo the newline
+      character).
+    * if ``fixed`` is False if the contents is a regular expression matching a
+      part of the line using :external+python:py:func:`re.search` (i.e. use the
+      anchors ``^``, ``$`` for start and end).
 
     This is the reimplementation of ``has_file`` from ``rprojroot``.
     """
@@ -123,16 +123,18 @@ class HasFile(Criterion):
 
 class HasFilePattern(HasFile):
     """
-    Search for file matching regular expression pattern.
+    Check whether a file exists with a name matching regular expression pattern
+    and (optionally) with matching contents.
 
-    ``pattern`` is the regular expression pattern any filename will be
-    matched against.
+    :param pattern: is the regular expression pattern any full path name will
+        be matched against using :external+python:py:func:`re.search`. It
+        searches only for entries inside the directory tested.
 
-    See :py:class:`HasFile` for the other parameters.
+    See :py:class:`HasFile` for the parameters matching the contents.
 
-    This is the reimplementation of ``has_file_pattern`` from ``rprojroot``.
-
-    Limitation: Searches only for entries at the same directory level.
+    This is the reimplementation of ``has_file_pattern`` from ``rprojroot``
+    (see `rprojroot reference
+    <https://rprojroot.r-lib.org/reference/root_criterion.html>`_).
     """
 
     def __init__(
@@ -170,13 +172,18 @@ class HasFilePattern(HasFile):
 
 class HasFileGlob(HasFile):
     """
-    Search for filename matching the glob pattern.
+    Check whether a file exists with a name matching the glob pattern
+    and (optionally) with matching contents.
 
-    ``pattern`` is the pattern any filename will be matched against.
+    :param pattern: Is the pattern any file path will be matched against by
+        using :external+python:py:meth:`pathlib.Path.glob`. The glob pattern
+        allows searching in subdirectories.
 
-    See :py:class:`HasFile` for the other parameters.
+    This is a reimplementation of ``matches_glob`` of ``pyprojroot``
+    (see `pyprojroot code
+    <https://github.com/chendaniely/pyprojroot/blob/329e2cd6ed9f357aaa9e2785d1d7990a7a6b1100/src/pyprojroot/criterion.py#L76>`_)
 
-    The glob pattern allows searching in subdirectories.
+    See :py:class:`HasFile` for the parameters matching the contents.
     """
 
     def __init__(
@@ -279,9 +286,11 @@ Exists = HasEntry
 class HasBasename(Criterion):
     """
     The directory's basename is equal to the name specified.
+
+    :param basename: expected basename
     """
 
-    def __init__(self, basename: PathSpec):
+    def __init__(self, basename: str):
         self.basename = basename
         super().__init__()
 
@@ -289,6 +298,7 @@ class HasBasename(Criterion):
         return CriterionResult(
             self.basename == pathlib.Path(dir).name, self, dir
         )
+
 
     def describe(self) -> str:
         return f"has the basename `{self.basename}`"
@@ -309,4 +319,4 @@ def as_root_criterion(criterion: typing.Any) -> "Criterion":
         return AnyCriteria(*map(as_root_criterion, criterion.values()))
     if isinstance(criterion, (list, tuple)):
         return AnyCriteria(*map(as_root_criterion, criterion))
-    raise ValueError(f"can not convert {type(criterion)} to criterion")
+    raise ValueError(f"cannot convert {type(criterion)} to criterion")

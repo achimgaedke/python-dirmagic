@@ -131,9 +131,11 @@ class CriterionResult(typing.NamedTuple):
 
     def rich_tree(self) -> "rich.tree.Tree":
         """
-        Result tree rendered with rich text layout.
+        Result tree rendered with rich text layout using
+        :external:py:class:`rich.tree.Tree`.
 
-        Please install the ``rich`` package (see optional dependencies).
+        Please install the :external+rich:ref:`rich package <Introduction>`
+        (see :ref:`optional-dependencies`).
         """
         from rich.tree import Tree
 
@@ -161,8 +163,7 @@ class CriterionResult(typing.NamedTuple):
             elif isinstance(self.criterion, ProjectType):
                 result_string += f"`{self.criterion.name}` project type"
             else:
-                # add warning for unknown?
-                result_string += f"`{type(self.criterion)}` criterion"
+                result_string += f"`{type(self.criterion).__name__}` criterion"
 
             result_tree.label = result_string
 
@@ -176,7 +177,7 @@ class Criterion(abc.ABC):
     """
     Abstract base class of a test criterion for a directory.
 
-    The ``test`` method returns the result of a test.
+    The :py:meth:`Criterion.test` method returns the result of a test.
 
     Criteria can be combined wiht the logical operators ``&``, ``|``, ``~``.
     """
@@ -221,7 +222,9 @@ class Criterion(abc.ABC):
 
     def rich_tree(self) -> "rich.tree.Tree":
         """
-        Display the criterion as a ``rich`` tree.
+        Display the criterion as a :external:py:class:`rich.tree.Tree`.
+
+        :rtype: :external:py:class:`rich.tree.Tree`
         """
         from rich.tree import Tree
 
@@ -233,7 +236,7 @@ class AnyCriteria(Criterion):
     """
     The directory matches when at least one of the criteria is met.
 
-    Criteria can be linked together with ``|`` to form ``AnyCriteria``.
+    Criteria can be linked together with ``|`` to form :py:class:`AnyCriteria`.
     """
 
     def __init__(self, *criteria: Criterion):
@@ -271,7 +274,7 @@ class AllCriteria(Criterion):
     """
     The directory matches when all criteria are met.
 
-    Criteria can be linked together with ``&`` to form ``AllCriteria``.
+    Criteria can be linked together with ``&`` to form :py:class:`AllCriteria`.
     """
 
     def __init__(self, *criteria: Criterion):
