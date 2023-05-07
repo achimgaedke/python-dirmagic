@@ -21,8 +21,9 @@ These classes are used to define project types and directory patterns.
 
 Generic criteria can be combined using the operators ``&``, ``|`` and negated
 with ``~``. Most generic criteria can be used within
-:py:class:`AnyMatchCriterion` or :py:class:`AllMatchCriterion` to build up
-complex criteria on many entries matched by name.
+:py:class:`dirmagic.pattern_criteria.AnyMatchCriterion` or
+:py:class:`dirmagic.pattern_criteria.AllMatchCriterion` to build up complex
+criteria on many entries matched by name.
 
 .. automodule:: dirmagic.generic_criteria
     :members:
@@ -44,7 +45,7 @@ Examples:
 .. code-block:: python
 
     AllMatchCriterion(
-        r"[^^/](.*)\.csv$",
+        r".*?([^/]*)\.csv$",
         MatchesPattern("{1}", r"\d\d-\d\d-\d\d\d\d") &
         HasFile("{0}", "time,transaction,balance", n=1, fixed=True)
     )
@@ -68,8 +69,8 @@ Examples:
         HasFile("{0}")
     )
 
-The criteria :py:class:`AnyMatchCriterion` and :py:class:`AllMatchCriterion`
-work as follows:
+The criteria :py:class:`dirmagic.pattern_criteria.AnyMatchCriterion` and
+:py:class:`dirmagic.pattern_criteria.AllMatchCriterion` work as follows:
 
 * All entries in the test directory will be considered, the search can
   be narrowed down by limiting the depth or the entry types returned.
@@ -80,8 +81,9 @@ work as follows:
   using the :external+python:py:meth:`str.format` function on one (or more)
   properties of the criterion (and the sub-criteria if existent).
 * For each match, the adjusted criterion is tested.
-* For :py:class:`AnyMatchCriterion`, the test is successful when one
-  test is positive, for :py:class:`AllMatchCriterion` the test is
+* For :py:class:`dirmagic.pattern_criteria.AnyMatchCriterion`, the test is
+  successful when one test is positive, for
+  :py:class:`dirmagic.pattern_criteria.AllMatchCriterion` the test is
   unsuccessful when one test is negative.
 
 The :external+python:py:meth:`re.Match.groups` and 
@@ -93,8 +95,10 @@ format the property string:
 * ``groupname`` is replaced with the named match, i.e.
   ``(?P<groupname>.*\.txt)``
 
-The criteria :py:class:`MatchesPattern`, :py:class:`FileMimeType`,
-:py:class:`IsIn`, and :py:class:`SuffixIsIn` are especially useful within
+The criteria :py:class:`dirmagic.pattern_criteria.MatchesPattern`,
+:py:class:`dirmagic.pattern_criteria.FileMimeType`,
+:py:class:`dirmagic.pattern_criteria.IsIn`, and
+:py:class:`dirmagic.pattern_criteria.SuffixIsIn` are especially useful within
 this context.
 
 .. automodule:: dirmagic.pattern_criteria
@@ -104,7 +108,7 @@ this context.
 Core Criteria
 -------------
 
-The module :py:mod:`core_criteria` provides the abstract criteria and
+The module :py:mod:`dirmagic.core_criteria` provides the abstract criteria and
 operations on those, like ``&``, ``|`` and ``~``.
 The test result object is defined here as well.
 

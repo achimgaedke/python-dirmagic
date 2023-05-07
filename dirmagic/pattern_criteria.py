@@ -256,7 +256,7 @@ class SpyCriterion(Criterion):
 
 class AnyMatchCriterion(Criterion):
     """
-    Tests for a criterion on entries matching. Is successful when any matching
+    Tests a criterion on entries matching. Is successful when any matching
     entry is tested successfully.
 
     :param pattern: regular expression pattern to match entries
@@ -305,7 +305,7 @@ class AnyMatchCriterion(Criterion):
 
 class AllMatchCriterion(Criterion):
     """
-    Tests for a criterion on entries matching. Is successful when all
+    Tests a criterion on entries matching. Is successful when all
     matching entries are tested successfully.
 
     :param pattern: regular expression pattern to match entries

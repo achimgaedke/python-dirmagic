@@ -158,7 +158,7 @@ Pattern Criteria
 ----------------
 
 This is an example of a criterion checking the contents of two directories
-using :py:func:`AllMatchCriterion` based on their filenames.
+using :py:class:`AllMatchCriterion` based on their filenames.
 
 It asserts that:
 
