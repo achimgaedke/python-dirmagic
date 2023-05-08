@@ -122,18 +122,7 @@ class HasFile(Criterion):
             dir,
         )
 
-    def expand_pattern(
-        self,
-        *args: typing.Any,
-        **kwargs: typing.Any,
-    ) -> "HasFile":
-        # spike solution
-        return HasFile(
-            str(self.filename).format(*args, **kwargs),
-            self.contents,
-            self.max_lines_to_search,
-            self.fixed,
-        )
+    template_attributes = ["filename"]
 
     def describe(self) -> str:
         pattern_description = f"has a file `{self.filename}`"
@@ -268,12 +257,7 @@ class HasDir(Criterion):
             (pathlib.Path(dir) / self.dirname).is_dir(), self, dir
         )
 
-    def expand_pattern(
-        self,
-        *args: typing.Any,
-        **kwargs: typing.Any,
-    ) -> "HasDir":
-        return HasDir(str(self.dirname).format(*args, **kwargs))
+    template_attributes = ["dirname"]
 
     def describe(self) -> str:
         return f"contains the directory `{self.dirname}`"
@@ -306,12 +290,7 @@ class HasEntry(Criterion):
             (pathlib.Path(dir) / self.entryname).exists(), self, dir
         )
 
-    def expand_pattern(
-        self,
-        *args: typing.Any,
-        **kwargs: typing.Any,
-    ) -> "HasEntry":
-        return HasEntry(str(self.entryname).format(*args, **kwargs))
+    template_attributes = ["entryname"]
 
     def describe(self) -> str:
         return f"contains the entry `{self.entryname}`"
@@ -373,12 +352,7 @@ class HasBasename(Criterion):
             self.basename == pathlib.Path(dir).name, self, dir
         )
 
-    def expand_pattern(
-        self,
-        *args: typing.Any,
-        **kwargs: typing.Any,
-    ) -> "HasBasename":
-        return HasBasename(self.basename.format(*args, **kwargs))
+    template_attributes = ["basename"]
 
     def describe(self) -> str:
         return f"has the basename `{self.basename}`"

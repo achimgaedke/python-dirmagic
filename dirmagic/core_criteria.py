@@ -1,4 +1,5 @@
 import abc
+import copy
 import pathlib
 import typing
 
@@ -226,15 +227,31 @@ class Criterion(abc.ABC):
         """
         ...
 
+    template_attributes: typing.Optional[typing.List[str]] = None
+
     def expand_pattern(
         self,
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> "Criterion":
         """
-        finalizes the criterion using the match and test for the criterion
+        Finalizes the criterion by expanding the templated attributes
+        using :external+python:py:meth:`str.format` with the arguments
+        supplied.
         """
-        raise NotImplementedError()
+        if not self.template_attributes:
+            return self
+
+        expanded = copy.copy(self)
+        for template_attribute in self.template_attributes:
+            setattr(
+                expanded,
+                template_attribute,
+                str(getattr(expanded, template_attribute)).format(
+                    *args, **kwargs
+                ),
+            )
+        return expanded
 
     def __or__(self, other: "Criterion") -> "AnyCriteria":
         """

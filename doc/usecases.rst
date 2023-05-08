@@ -101,7 +101,7 @@ Display a result of a criterion match rendered with ``rich``:
         FALSE: contains the directory `.dvc`
 
 The method :py:meth:`dirmagic.core_criteria.CriterionResult.simple_tree`
-returns a string displaying the result tree using indentation only, no ``tree``
+returns a string displaying the result tree using indentation only, no ``rich``
 package required here.
 
 Custom Criteria
@@ -181,14 +181,14 @@ the need for coded criteria.)
         ...:     dirmagic.generic_criteria.HasFile("classes.txt")
         ...:     & dirmagic.pattern_criteria.AllMatchCriterion(
         ...:         r"^images/.*$",
-        ...:         dirmagic.pattern_criteria.SuffixIsIn("{0}", [".png", ".jpg"]),
+        ...:         dirmagic.pattern_criteria.SuffixIsIn("{0[0]}", [".png", ".jpg"]),
         ...:     )
         ...:     & dirmagic.pattern_criteria.AllMatchCriterion(
         ...:         r"^labels/(.*)\.[^\.]*$",
-        ...:         dirmagic.pattern_criteria.MatchesPattern("{0}", r".*\.txt$")
+        ...:         dirmagic.pattern_criteria.MatchesPattern("{0[0]}", r".*\.txt$")
         ...:         & (
-        ...:             dirmagic.generic_criteria.HasFile("images/{1}.png")
-        ...:             | dirmagic.generic_criteria.HasFile("images/{1}.jpg")
+        ...:             dirmagic.generic_criteria.HasFile("images/{0[1]}.png")
+        ...:             | dirmagic.generic_criteria.HasFile("images/{0[1]}.jpg")
         ...:         ),
         ...:     )
         ...: )
@@ -198,13 +198,13 @@ the need for coded criteria.)
     AND
     ├── has a file `classes.txt`
     ├── for all files matching `^images/.*$`
-    │   └── the suffix of `{0}` is in ['.png', '.jpg']
+    │   └── the suffix of `{0[0]}` is in ['.png', '.jpg']
     └── for all files matching `^labels/(.*)\.[^\.]*$`
         └── AND
-            ├── `{0}` matches `.*\.txt$`
+            ├── `{0[0]}` matches `.*\.txt$`
             └── OR
-                ├── has a file `images/{1}.png`
-                └── has a file `images/{1}.jpg`
+                ├── has a file `images/{0[1]}.png`
+                └── has a file `images/{0[1]}.jpg`
 
     In [4]: yolo_data.test("augmented_yolo_data/").rich_tree()
     Out[4]:

@@ -28,6 +28,7 @@ __all__ = [
     "IsIn",
     "SuffixIsIn",
     "SpyCriterion",
+    "translate",
 ]
 
 
@@ -42,6 +43,13 @@ def iter_matching_entries(
     """
     Search through all sub-directories inside ``start_path/sub_path``
 
+    The sub-directories are searched breadth first.
+    If a directory's name matches, the directory entries are not searched.
+
+    .. warning::
+
+        The function is not protected against cyclic symbolic links.
+
     :param start_path: the directory to start the search at
 
     :param pattern: The pattern is matched with
@@ -52,13 +60,6 @@ def iter_matching_entries(
 
     :param maxdepth: the maximal iteration depth, unlimited if negative, will
         always return immediately when 0.
-
-    The sub-directories are searched breadth first.
-    If a directory's name matches, the directory is not searched.
-
-    .. warning::
-
-        The function is not protected against cyclic symbolic links.
     """
 
     if maxdepth == 0:
@@ -96,14 +97,7 @@ class MatchesPattern(Criterion):
         self.name_template = name_template
         self.pattern = re.compile(pattern)
 
-    def expand_pattern(
-        self,
-        *args: typing.Tuple[typing.Any, ...],
-        **kwargs: typing.Dict[str, typing.Any],
-    ) -> Criterion:
-        return MatchesPattern(
-            self.name_template.format(*args, **kwargs), self.pattern
-        )
+    template_attributes = ["name_template"]
 
     def test(
         self,
@@ -134,15 +128,7 @@ class IsIn(Criterion):
         self.names = list(names)
         self.name_template = str(name_template)
 
-    def expand_pattern(
-        self,
-        *args: typing.Tuple[typing.Any, ...],
-        **kwargs: typing.Dict[str, typing.Any],
-    ) -> Criterion:
-        return IsIn(
-            pathlib.Path(self.name_template.format(*args, **kwargs)).name,
-            self.names,
-        )
+    template_attributes = ["name_template"]
 
     def test(
         self,
@@ -152,7 +138,9 @@ class IsIn(Criterion):
     ) -> CriterionResult:
         if args or kwargs:
             self.expand_pattern(*args, **kwargs).test(dir)
-        return CriterionResult(self.name_template in self.names, self, dir)
+        return CriterionResult(
+            pathlib.Path(self.name_template).name in self.names, self, dir
+        )
 
     def describe(self) -> str:
         return f"`{self.name_template}` is in {self.names}"
@@ -171,14 +159,7 @@ class SuffixIsIn(Criterion):
         self.name_template = str(name_template)
         self.suffixes = list(suffixes)
 
-    def expand_pattern(
-        self,
-        *args: typing.Tuple[typing.Any, ...],
-        **kwargs: typing.Dict[str, typing.Any],
-    ) -> Criterion:
-        return SuffixIsIn(
-            self.name_template.format(*args, **kwargs), self.suffixes
-        )
+    template_attributes = ["name_template"]
 
     def test(
         self,
@@ -209,12 +190,7 @@ class FileMimeType(Criterion):
         self.filename = str(filename)
         self.mimetype = str(mimetype)
 
-    def expand_pattern(
-        self, *args: typing.Any, **kwargs: typing.Any
-    ) -> Criterion:
-        return FileMimeType(
-            self.filename.format(*args, **kwargs), self.mimetype
-        )
+    template_attributes = ["filename"]
 
     def test(
         self, dir: PathSpec, *args: typing.Any, **kwargs: typing.Any
@@ -274,13 +250,10 @@ class AnyMatchCriterion(Criterion):
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> CriterionResult:
-        assert not (args or kwargs)
         all_res = []
         dir = pathlib.Path(dir)
         for match in iter_matching_entries(dir, self.pattern, maxdepth=-1):
-            res = self.criterion.test(
-                dir, match[0], *match.groups(), **match.groupdict()
-            )
+            res = self.criterion.test(dir, match, *args, **kwargs)
             all_res.append(res)
             if res:
                 # early exit
@@ -324,14 +297,11 @@ class AllMatchCriterion(Criterion):
         *args: typing.Any,
         **kwargs: typing.Any,
     ) -> CriterionResult:
-        assert not (args or kwargs)
         all_res = []
         dir = pathlib.Path(dir)
 
         for match in iter_matching_entries(dir, self.pattern, maxdepth=-1):
-            res = self.criterion.test(
-                dir, match[0], *match.groups(), **match.groupdict()
-            )
+            res = self.criterion.test(dir, match, *args, **kwargs)
             all_res.append(res)
             if not res:
                 # early exit

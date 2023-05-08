@@ -10,14 +10,7 @@ AnyMatchCriterion / AllMatchCriterion:
 * add parameters like maxdepth and subdir to *MatchCriterion
 * limit search results to files or dirs only in a subdir...
 * explain search depth/order
-* no nested *MatchCriteria at this stage, but later
 * make more obvious which criteria are useful with the match criteria.
-
-Regular expressions and path names:
-
-* search vs match
-* explain how to limit file or dir names with regular expressions
-* mention the translate function & examples
 
 ## Add criteria
 

@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to python-dirmagic's documentation!
-===========================================
+###########################################
 
 .. code-block:: ipython
 
@@ -34,46 +34,20 @@ Quick intro: :ref:`use-cases`
 *Inspired by:*
 
 * `file command <https://en.wikipedia.org/wiki/File_(command)>`_
-* `libmagic <https://www.darwinsys.com/file/>`_ as library of file signatures (aka magic numbers)
+* `libmagic <https://www.darwinsys.com/file/>`_ as library of
+  `file signatures (aka magic numbers) <https://en.wikipedia.org/wiki/File_format#Magic_number>`_
 * `python's binding <https://github.com/ahupp/python-magic>`_ of libmagic
 * `rprojroot <https://rprojroot.r-lib.org/>`_
 * `pyprojroot <https://github.com/chendaniely/pyprojroot>`_
-
-... myself, repeatedly trying to find data, projects, subprojects programatically
-
-Installation
-------------
-
-.. code-block:: shell
-
-   pip install git+https://github.com/achimgaedke/python-dirmagic.git
-
-Supports ``python3.7``... ``python3.12``.
-
-.. _optional-dependencies:
-
-Optional Dependencies
-^^^^^^^^^^^^^^^^^^^^^
-
-* `rich <https://rich.readthedocs.io/en/latest/>`_ for a better tree structure display
-
-If you plan to use ``rich`` with jupyter, install:
-
-* the pip package ``rich[jupyter]``
-* the conda package ``rich-with-jupyter``
+* ... myself, repeatedly coding some functions to locate data, projects...
 
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
 
    usecases
-   project_types
+   installation
+   api_overview
    api_docs
    development
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   indices
